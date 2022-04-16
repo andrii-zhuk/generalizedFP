@@ -1,5 +1,4 @@
 #[derive(Debug)]
-pub struct Node 
-{
-    pub label: String, 
+pub struct Node {
+    pub label: String,
 }
