@@ -1,4 +1,5 @@
 extern crate self as computer;
 
-pub mod types;
+pub mod algorithms;
 pub mod converters;
+pub mod types;
