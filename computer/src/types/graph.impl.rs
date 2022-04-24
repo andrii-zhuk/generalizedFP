@@ -37,6 +37,7 @@ impl From<UncompressedGraph> for DirectedGraph {
         let source = *translator.get(&source).unwrap();
 
         let mut edges_list: Vec<Edge> = vec![];
+        let mut reverse_edge_ids: Vec<usize> = vec![];
         let mut adj_lists: Vec<Vec<usize>> = vec![vec![]; nodes.len()];
         for edge in input.edges_list {
             let from_id = *translator.get(&edge.from).unwrap();
@@ -51,6 +52,8 @@ impl From<UncompressedGraph> for DirectedGraph {
                 amplification,
                 flow: 0.0,
             });
+            reverse_edge_ids.push(edges_list.len());
+
             adj_lists[to_id].push(edges_list.len());
             edges_list.push(Edge {
                 from_id: to_id,
@@ -59,6 +62,7 @@ impl From<UncompressedGraph> for DirectedGraph {
                 amplification: 1.0 / amplification,
                 flow: 0.0,
             });
+            reverse_edge_ids.push(edges_list.len() - 2);
         }
 
         DirectedGraph {
@@ -67,6 +71,7 @@ impl From<UncompressedGraph> for DirectedGraph {
             nodes,
             sink,
             source,
+            reverse_edge_ids,
         }
     }
 }
