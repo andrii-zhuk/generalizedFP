@@ -17,7 +17,7 @@ pub fn has_augmenting_path(graph: &DirectedGraph) -> f64 {
             for edge_id in &graph.adj_lists[cur] {
                 let edge = &graph.edges_list[*edge_id];
                 let to = edge.to_id;
-                if used[to] != 0 {
+                if used[to] != 0 || edge.capacity < edge.flow {
                     continue;
                 }
                 used[to] = 1;
