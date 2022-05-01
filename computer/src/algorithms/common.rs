@@ -1,8 +1,11 @@
-use std::{collections::VecDeque, f64::INFINITY};
+use std::{
+    collections::VecDeque,
+    f64::{EPSILON, INFINITY},
+};
 
 use crate::types::DirectedGraph;
 
-pub fn has_augmenting_path(graph: &DirectedGraph) -> f64 {
+pub fn has_augmenting_path(graph: &DirectedGraph) -> Option<f64> {
     fn bfs(graph: &DirectedGraph) -> f64 {
         let mut q = VecDeque::<(usize, f64)>::new();
         let mut used = vec![0; graph.nodes.len()];
@@ -26,5 +29,9 @@ pub fn has_augmenting_path(graph: &DirectedGraph) -> f64 {
         }
         return 0.0;
     }
-    return bfs(graph);
+    let flow = bfs(graph);
+    if flow < EPSILON {
+        return None;
+    }
+    return Some(flow);
 }
