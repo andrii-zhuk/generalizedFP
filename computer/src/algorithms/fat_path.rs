@@ -2,10 +2,10 @@ use std::f64::{consts::E, EPSILON};
 
 use crate::types::{DirectedGraph, Edge};
 
-use super::reverse_bellman_ford;
+use super::bellman_ford;
 
 fn get_fat_path(graph: &DirectedGraph) -> Option<Vec<usize>> {
-    let (_, parents) = reverse_bellman_ford(
+    let (_, parents, cycle) = bellman_ford(
         graph,
         |edge: &Edge| {
             if (edge.flow - edge.capacity).abs() < EPSILON {
@@ -16,7 +16,11 @@ fn get_fat_path(graph: &DirectedGraph) -> Option<Vec<usize>> {
         },
         super::Mode::Max,
         graph.sink,
+        true,
     );
+    if cycle != None {
+        return None;
+    }
     if parents[graph.source] == None {
         return None;
     }
@@ -71,7 +75,7 @@ pub fn propagate_fat_path(graph: &mut DirectedGraph) -> Option<f64> {
 
     for &edge_id in &path {
         let edge = &graph.edges_list[edge_id];
-        let available = edge.capacity - edge.flow;
+        let available = edge.capacity - edge.flow + graph.nodes[edge.to_id].excess;
         if available < EPSILON {
             return None;
         }
@@ -92,6 +96,10 @@ pub fn propagate_fat_path(graph: &mut DirectedGraph) -> Option<f64> {
 
         let edge = &mut graph.edges_list[edge_id];
         edge.flow += flow;
+        if edge.flow > edge.capacity {
+            graph.nodes[edge.to_id].excess += edge.flow - edge.capacity;
+            edge.flow = edge.capacity;
+        }
     }
     return Some(flow);
 }

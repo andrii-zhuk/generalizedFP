@@ -26,7 +26,10 @@ impl From<UncompressedGraph> for DirectedGraph {
         let mut nodes: Vec<String> = translator.into_iter().collect();
         nodes.sort();
 
-        let nodes: Vec<Node> = nodes.into_iter().map(|label| Node { label }).collect();
+        let nodes: Vec<Node> = nodes
+            .into_iter()
+            .map(|label| Node { label, excess: 0.0 })
+            .collect();
 
         let mut translator = HashMap::<String, usize>::new();
         nodes.iter().enumerate().for_each(|(id, node)| {
@@ -42,6 +45,9 @@ impl From<UncompressedGraph> for DirectedGraph {
         for edge in input.edges_list {
             let from_id = *translator.get(&edge.from).unwrap();
             let to_id = *translator.get(&edge.to).unwrap();
+            if to_id == source || from_id == sink {
+                continue;
+            }
             let capacity = edge.capacity;
             let amplification = edge.amplification;
             adj_lists[from_id].push(edges_list.len());
