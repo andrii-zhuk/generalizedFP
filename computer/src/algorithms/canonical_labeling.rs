@@ -1,4 +1,5 @@
-use std::f64::{consts::E, EPSILON};
+use super::EPSILON;
+use std::f64::consts::E;
 
 use crate::{
     algorithms::bellman_ford,

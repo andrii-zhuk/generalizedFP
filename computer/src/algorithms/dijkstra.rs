@@ -2,7 +2,7 @@
 // Either rewrite with use of potentials or completely delete.
 // Yield parent edge_ids as well.
 
-use std::f64::EPSILON;
+use super::EPSILON;
 use std::f64::INFINITY;
 use std::{cmp::Ordering, collections::BinaryHeap};
 
@@ -57,7 +57,7 @@ pub fn dijkstra(
         DijkstraMode::Max => -1.0,
     };
 
-    let mut dist = vec![inf; graph.nodes.len()];
+    let mut dist = vec![inf; graph.n()];
     let mut heap = BinaryHeap::new();
 
     dist[start_id] = 0.0;
@@ -89,7 +89,7 @@ pub fn dijkstra(
         }
     }
 
-    let mut result = vec![Some(0.0); graph.nodes.len()];
+    let mut result = vec![Some(0.0); graph.n()];
     for (i, value) in dist.iter().enumerate() {
         result[i] = if *value == inf {
             None

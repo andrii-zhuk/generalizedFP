@@ -1,4 +1,5 @@
-use std::f64::{consts::E, EPSILON};
+use super::EPSILON;
+use std::f64::consts::E;
 
 use crate::{
     algorithms::{get_path_edge_ids, get_path_node_ids, propagate_cycle},
@@ -7,8 +8,13 @@ use crate::{
 
 use super::bellman_ford;
 
+/// Returns true if graph contains flow-generating cycles.
+/// For speed-up purpose, we run it once in `n` steps.
+/// ### Complexity
+/// O(n*m)
 fn has_cycles(graph: &DirectedGraph, step_counter: &mut usize) -> bool {
-    if *step_counter % graph.nodes.len() == 0 {
+    if *step_counter % graph.n() == 0 {
+        *step_counter += 1;
         let (_, _, cycle) = bellman_ford(
             graph,
             |edge: &Edge| {
@@ -30,24 +36,12 @@ fn has_cycles(graph: &DirectedGraph, step_counter: &mut usize) -> bool {
     *step_counter += 1;
     return true;
 }
-// return vector of bool. result[i] == true <=> vertex is reachable form source
-// by edges of non-0 capacity.
-fn get_reachable_from_source(graph: &DirectedGraph) -> Vec<bool> {
-    let mut result = vec![false; graph.nodes.len()];
-    fn dfs(node_id: usize, graph: &DirectedGraph, status: &mut Vec<bool>) {
-        status[node_id] = true;
-        for &edge_id in &graph.adj_lists[node_id] {
-            let edge = &graph.edges_list[edge_id];
-            if edge.capacity < EPSILON || status[edge.to_id] == true {
-                continue;
-            }
-            dfs(edge.to_id, graph, status);
-        }
-    }
-    dfs(graph.source, graph, &mut result);
-    return result;
-}
 
+/// Calculates potential cost of an edge: `-ln(amplification) - potential[from_id] + potential[to_id]`.
+///
+/// Returns `None` if an edge is empty or potential cost is negative.
+///
+/// Returns `Option` otherwise.
 fn edge_value(edge: &Edge, potentials: &Vec<f64>) -> Option<f64> {
     if edge.capacity - edge.flow < EPSILON {
         return None;
@@ -62,14 +56,15 @@ fn edge_value(edge: &Edge, potentials: &Vec<f64>) -> Option<f64> {
     }
 }
 
-fn remove_negative_cycles(
-    graph: &mut DirectedGraph,
-    potentials: &Vec<f64>,
-    reachable_from_source: &Vec<bool>,
-) -> Option<f64> {
-    let mut status = vec![0; graph.nodes.len()];
+/// Indicates and removes from `graph` all cycles that have negative
+/// potential cost.
+///
+/// ### Complexity
+/// O(n + m)
+fn remove_negative_cycles(graph: &mut DirectedGraph, potentials: &Vec<f64>) -> Option<f64> {
+    let mut status = vec![0; graph.n()];
     let mut cycle: Vec<usize> = Vec::<usize>::new();
-    cycle.reserve(graph.nodes.len());
+    cycle.reserve(graph.n());
     fn dfs(
         node_id: usize,
         graph: &DirectedGraph,
@@ -103,8 +98,8 @@ fn remove_negative_cycles(
         status[node_id] = 2;
     }
 
-    for node_id in 0..(graph.nodes.len()) {
-        if !reachable_from_source[node_id] {
+    for node_id in 0..(graph.n()) {
+        if !graph.nodes[node_id].reachable_from_source {
             continue;
         }
         if status[node_id] == 2 {
@@ -131,9 +126,16 @@ fn remove_negative_cycles(
     Some(0.0)
 }
 
+/// Recalculates values of potentials in order to maintain following logic:
+///
+/// For all non empty edges that are connected with source and have
+/// non-negative potential cost should be not less than `-barrier`:
+///
+/// ### Complexity
+/// O(n + m)
 fn recalculate_potentials(graph: &DirectedGraph, potentials: &mut Vec<f64>, barrier: f64) {
     let mut stack: Vec<usize> = vec![];
-    let mut status = vec![0; graph.nodes.len()];
+    let mut status = vec![0; graph.n()];
 
     fn dfs(
         node_id: usize,
@@ -153,7 +155,7 @@ fn recalculate_potentials(graph: &DirectedGraph, potentials: &mut Vec<f64>, barr
         stack.push(node_id);
     }
 
-    for node_id in (0..graph.nodes.len()).rev() {
+    for node_id in (0..graph.n()).rev() {
         if status[node_id] != 0 {
             continue;
         }
@@ -161,16 +163,31 @@ fn recalculate_potentials(graph: &DirectedGraph, potentials: &mut Vec<f64>, barr
     }
 
     for (topological_order, node_id) in stack.iter().rev().enumerate() {
-        potentials[*node_id] += (topological_order as f64) * barrier / (graph.nodes.len() as f64);
+        potentials[*node_id] += (topological_order as f64) * barrier / (graph.n() as f64);
     }
 }
 
+/// Checks if potentials keep following logic:
+///
+/// For all non empty edges that are connected with source and have
+/// non-negative potential cost should be not less than `-barrier`:
+///
+/// ### Panics
+/// If at least one edge don't follow this logic.
+///
+/// ### Complexity
+/// O(m)
 fn validate_potentials(graph: &DirectedGraph, potentials: &Vec<f64>, barrier: f64) {
     for edge in &graph.edges_list {
+        // If an edge is not connected to the source, then we will not cancel negative cycles
+        // since it do not affect a solution. Therefore we do not need to maintain this rule
+        if !graph.reachable_from_source(edge.from_id) || !graph.reachable_from_source(edge.to_id) {
+            continue;
+        }
         if let Some(value) = edge_value(edge, potentials) {
-            if value < -barrier {
+            if value + barrier < -EPSILON {
                 panic!(
-                    "Potentials calculated wrong way:\n{:?}\nwith it's potential value < -barrier: {} < {}",
+                    "Potentials calculated wrong way:\n{:?}\nWith it's potential value < -barrier: {} < {}",
                     edge, value, -barrier
                 );
             }
@@ -178,10 +195,9 @@ fn validate_potentials(graph: &DirectedGraph, potentials: &Vec<f64>, barrier: f6
     }
 }
 
-pub fn process_cycles(graph: &mut DirectedGraph) {
+pub fn cancel_cycles(graph: &mut DirectedGraph) {
     let mut counter = 0;
-    let mut potentials = vec![0.0; graph.nodes.len()];
-    let reachable_from_source = get_reachable_from_source(&graph);
+    let mut potentials = vec![0.0; graph.n()];
     let edge_value = |edge: &Edge| -> Option<f64> {
         if edge.capacity - edge.flow < EPSILON {
             None
@@ -196,24 +212,18 @@ pub fn process_cycles(graph: &mut DirectedGraph) {
             None => continue,
             Some(value) => value,
         };
-        barrier = match barrier {
-            None => Some(-cost),
-            Some(value) => Some(value.max(-cost)),
-        };
+        barrier = Some(barrier.unwrap_or(-cost).max(-cost));
     }
-    let mut barrier = match barrier {
-        None => return,
-        Some(value) => value,
-    };
-
-    while has_cycles(graph, &mut counter) {
-        remove_negative_cycles(graph, &potentials, &reachable_from_source);
-        println!("process_cycles stage {} finished", counter);
-        recalculate_potentials(graph, &mut potentials, barrier);
-        validate_potentials(graph, &potentials, barrier);
-        barrier *= ((graph.nodes.len() as f64) - 1.0) / (graph.nodes.len() as f64);
-        if counter == 2000 {
-            panic!("too many stages of cycle procession");
+    if let Some(mut barrier) = barrier {
+        while has_cycles(graph, &mut counter) {
+            remove_negative_cycles(graph, &potentials);
+            println!("cancel_cycles stage {} finished", counter);
+            recalculate_potentials(graph, &mut potentials, barrier);
+            barrier *= 1.0 - 1.0 / (graph.n() as f64);
+            validate_potentials(&graph, &potentials, barrier);
+            if counter > 2000 {
+                panic!("too many stages of cycle procession");
+            }
         }
     }
 }

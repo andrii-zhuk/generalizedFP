@@ -1,4 +1,4 @@
-use std::f64::EPSILON;
+use super::EPSILON;
 
 use crate::types::DirectedGraph;
 
