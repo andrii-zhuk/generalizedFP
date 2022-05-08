@@ -9,7 +9,7 @@ pub fn find_canonical_labeling(graph: &DirectedGraph) -> Vec<Option<f64>> {
     let (mut dist, _, cycle) = bellman_ford(
         graph,
         |edge: &Edge| {
-            if (edge.flow - edge.capacity).abs() < EPSILON {
+            if edge.capacity - edge.flow < EPSILON {
                 None
             } else {
                 Some((edge.amplification).log(E))

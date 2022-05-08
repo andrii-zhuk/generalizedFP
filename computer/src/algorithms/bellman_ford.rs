@@ -48,13 +48,16 @@ pub fn bellman_ford(
             {
                 if i == graph.nodes.len() - 1 {
                     let mut cycle: Vec<usize> = vec![];
-                    let mut node_id = edge.to_id;
-                    cycle.push(edge.to_id);
-                    while node_id != edge.from_id {
+                    let mut node_id = current_node(edge);
+                    cycle.push(node_id);
+                    loop {
                         if let Some(edge_id) = parents[node_id] {
                             cycle.push(edge_id);
-                            cycle.push(graph.edges_list[edge_id].to_id);
-                            node_id = graph.edges_list[edge_id].to_id;
+                            node_id = current_node(&graph.edges_list[edge_id]);
+                            cycle.push(node_id);
+                            if node_id == cycle[0] {
+                                break;
+                            }
                         } else {
                             panic!("Negative cycle retrieving error: Undefined parent.");
                         }
@@ -62,8 +65,6 @@ pub fn bellman_ford(
                             panic!("Negative cycle retrieving error: Cycle length can not exceed number of nodes in graph.");
                         }
                     }
-                    cycle.push(edge_id);
-                    cycle.push(edge.to_id);
                     return (dist, parents, Some(cycle));
                 }
                 dist[next_node(edge)] = Some(dist[current_node(edge)].unwrap() + value);

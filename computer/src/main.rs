@@ -1,13 +1,19 @@
-use computer::{
-    algorithms::{get_fat_path_node_ids, propagate_fat_path},
-    converters::read_from_file,
-};
+use std::io::stdin;
+
+use computer::{algorithms::find_flow, converters::read_from_file};
 
 fn main() {
-    println!("Hello, world123!");
     let mut result = read_from_file(&String::from("../static/mock_graph.txt"));
-    println!("{:#?}", result);
-    println!("{:#?}", get_fat_path_node_ids(&result).unwrap_or(vec![]));
-    println!("{:?}", propagate_fat_path(&mut result).unwrap_or(47.0));
-    println!("{:?}", result);
+    println!(
+        "RESULT: propagated {} units of flow.",
+        find_flow(&mut result)
+    );
+    println!("Output graph? y/n:");
+    let mut s = String::new();
+    stdin().read_line(&mut s).unwrap();
+    s.pop();
+
+    if s == "y" || s == "Y" {
+        println!("{:#?}", result);
+    }
 }

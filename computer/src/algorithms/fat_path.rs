@@ -4,11 +4,11 @@ use crate::types::{DirectedGraph, Edge};
 
 use super::bellman_ford;
 
-fn get_fat_path(graph: &DirectedGraph) -> Option<Vec<usize>> {
-    let (_, parents, cycle) = bellman_ford(
+pub fn get_fat_path(graph: &DirectedGraph) -> Option<Vec<usize>> {
+    let (dist, parent, cycle) = bellman_ford(
         graph,
         |edge: &Edge| {
-            if (edge.flow - edge.capacity).abs() < EPSILON {
+            if edge.capacity - edge.flow < EPSILON {
                 None
             } else {
                 Some((edge.amplification).log(E))
@@ -19,23 +19,44 @@ fn get_fat_path(graph: &DirectedGraph) -> Option<Vec<usize>> {
         true,
     );
     if cycle != None {
-        return None;
+        panic!("Impossible to get fat path if graph has flow-generating cycles.");
     }
-    if parents[graph.source] == None {
+    let mut start_node: usize = graph.source;
+    let mut best_dist = dist[start_node];
+    for node_id in 0..graph.nodes.len() {
+        if let Some(cur_dist) = dist[node_id] {
+            if best_dist.unwrap_or(cur_dist - 1.0) < cur_dist
+                && graph.nodes[node_id].excess > EPSILON
+            {
+                start_node = node_id;
+                best_dist = Some(cur_dist);
+            }
+        }
+    }
+    let mut node = start_node;
+    if parent[node] == None {
         return None;
     }
     let mut path: Vec<usize> = vec![];
 
-    let mut node: usize = graph.source;
+    println!("Propagating fat path from {}", node);
     while node != graph.sink {
         path.push(node);
-        let edge_id = match parents[node] {
+        let edge_id = match parent[node] {
             None => panic!("Bellman-Ford returned invalid path."),
             Some(value) => value,
         };
         path.push(edge_id);
         node = graph.edges_list[edge_id].to_id;
         if path.len() > 2 * graph.nodes.len() {
+            for i in 0..parent.len() {
+                if parent[i] == None {
+                    println!("None");
+                } else {
+                    println!("{:#?}", graph.edges_list[parent[i].unwrap()]);
+                }
+            }
+            println!("{:#?}", dist);
             panic!("Bellman-Ford returned invalid path. (cycled path)")
         }
     }

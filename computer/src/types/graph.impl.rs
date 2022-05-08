@@ -3,13 +3,29 @@ use std::collections::{HashMap, HashSet};
 use crate::types::{DirectedGraph, Edge, Node, UncompressedGraph};
 
 impl DirectedGraph {
-    pub fn temp(&self) {
-        println!("durkaaaa {}", self.adj_lists.len());
-        if self.nodes.len() != 0 {
-            for node in &self.nodes {
-                println!("node {}", node.label);
-            }
+    pub fn add_edge(&mut self, from_id: usize, to_id: usize, capacity: f64, amplification: f64) {
+        if from_id.max(to_id) >= self.nodes.len() {
+            panic!("Failed to add edge between non-existent nodes.");
         }
+        self.adj_lists[from_id].push(self.edges_list.len());
+        self.edges_list.push(Edge {
+            from_id,
+            to_id,
+            capacity,
+            flow: 0.0,
+            amplification,
+        });
+        self.reverse_edge_ids.push(self.edges_list.len());
+
+        self.adj_lists[to_id].push(self.edges_list.len());
+        self.edges_list.push(Edge {
+            from_id: to_id,
+            to_id: from_id,
+            capacity: 0.0,
+            flow: 0.0,
+            amplification: 1.0 / amplification,
+        });
+        self.reverse_edge_ids.push(self.edges_list.len() - 2);
     }
 }
 impl From<UncompressedGraph> for DirectedGraph {
@@ -39,45 +55,23 @@ impl From<UncompressedGraph> for DirectedGraph {
         let sink = *translator.get(&sink).unwrap();
         let source = *translator.get(&source).unwrap();
 
-        let mut edges_list: Vec<Edge> = vec![];
-        let mut reverse_edge_ids: Vec<usize> = vec![];
-        let mut adj_lists: Vec<Vec<usize>> = vec![vec![]; nodes.len()];
+        let mut graph = DirectedGraph {
+            adj_lists: vec![vec![]; nodes.len()],
+            edges_list: vec![],
+            reverse_edge_ids: vec![],
+            nodes,
+            sink,
+            source,
+        };
         for edge in input.edges_list {
             let from_id = *translator.get(&edge.from).unwrap();
             let to_id = *translator.get(&edge.to).unwrap();
             if to_id == source || from_id == sink {
                 continue;
             }
-            let capacity = edge.capacity;
-            let amplification = edge.amplification;
-            adj_lists[from_id].push(edges_list.len());
-            edges_list.push(Edge {
-                from_id,
-                to_id,
-                capacity,
-                amplification,
-                flow: 0.0,
-            });
-            reverse_edge_ids.push(edges_list.len());
-
-            adj_lists[to_id].push(edges_list.len());
-            edges_list.push(Edge {
-                from_id: to_id,
-                to_id: from_id,
-                capacity: 0.0,
-                amplification: 1.0 / amplification,
-                flow: 0.0,
-            });
-            reverse_edge_ids.push(edges_list.len() - 2);
+            graph.add_edge(from_id, to_id, edge.capacity, edge.amplification);
         }
 
-        DirectedGraph {
-            adj_lists,
-            edges_list,
-            nodes,
-            sink,
-            source,
-            reverse_edge_ids,
-        }
+        graph
     }
 }

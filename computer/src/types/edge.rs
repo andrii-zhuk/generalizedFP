@@ -1,9 +1,9 @@
 #[derive(Debug, Clone)]
 pub struct Edge {
-    pub to_id: usize,
     pub from_id: usize,
-    pub capacity: f64,
+    pub to_id: usize,
     pub flow: f64,
+    pub capacity: f64,
     pub amplification: f64,
 }
 
