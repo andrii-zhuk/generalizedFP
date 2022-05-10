@@ -1,4 +1,6 @@
-#[derive(Debug)]
+use serde::Serialize;
+
+#[derive(Serialize, Debug)]
 pub struct Node {
     pub label: String,
     pub excess: f64,

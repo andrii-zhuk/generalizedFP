@@ -1,5 +1,7 @@
+use serde::Serialize;
+
 use crate::types;
-#[derive(Debug)]
+#[derive(Serialize, Debug)]
 pub struct DirectedGraph {
     pub adj_lists: Vec<Vec<usize>>,
     pub edges_list: Vec<types::Edge>,
@@ -9,7 +11,7 @@ pub struct DirectedGraph {
     pub source: usize,
 }
 
-#[derive(Debug)]
+#[derive(Serialize, Debug)]
 pub struct UncompressedGraph {
     pub source: String,
     pub sink: String,

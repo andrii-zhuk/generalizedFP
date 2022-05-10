@@ -1,12 +1,12 @@
-use std::io::stdin;
+use std::io::{stdin, Error};
 
-use computer::{algorithms::find_flow, converters::read_from_file};
+use computer::{algorithms::find_flow, converters::{read_from_file, to_file}};
 
 fn main() {
-    let mut result = read_from_file(&String::from("../static/mock_graph.txt"));
+    let mut graph = read_from_file(&String::from("../static/mock_graph.txt"));
     println!(
         "RESULT: propagated {} units of flow.",
-        find_flow(&mut result)
+        find_flow(&mut graph)
     );
     println!("Output graph? y/n:");
     let mut s = String::new();
@@ -14,6 +14,12 @@ fn main() {
     s.pop();
 
     if s == "y" || s == "Y" {
-        println!("{:#?}", result);
+        println!("{:#?}", graph);
     }
+
+    let serialized = serde_json::to_string(&graph).unwrap();
+    println!("serialized {}", serialized);
+
+    let result = to_file(&String::from("../static/result_graph.json"), &graph);
+        println!("{:?}", result);
 }

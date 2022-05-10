@@ -1,0 +1,121 @@
+{
+  "adj_lists": [
+    [0, 2],
+    [5, 6],
+    [7, 8, 10],
+    [1, 12],
+    [3, 4, 9],
+    [11, 13]
+  ],
+  "edges_list": [
+    {
+      "from_id": 0,
+      "to_id": 3,
+      "flow": 4.0,
+      "capacity": 5.0,
+      "amplification": 2.0
+    },
+    {
+      "from_id": 3,
+      "to_id": 0,
+      "flow": -8.0,
+      "capacity": 0.0,
+      "amplification": 0.5
+    },
+    {
+      "from_id": 0,
+      "to_id": 4,
+      "flow": 10.0,
+      "capacity": 10.0,
+      "amplification": 0.005
+    },
+    {
+      "from_id": 4,
+      "to_id": 0,
+      "flow": -0.05,
+      "capacity": 0.0,
+      "amplification": 200.0
+    },
+    {
+      "from_id": 4,
+      "to_id": 1,
+      "flow": 0.2777777777777777,
+      "capacity": 15.0,
+      "amplification": 2.0
+    },
+    {
+      "from_id": 1,
+      "to_id": 4,
+      "flow": -0.5555555555555554,
+      "capacity": 0.0,
+      "amplification": 0.5
+    },
+    {
+      "from_id": 1,
+      "to_id": 2,
+      "flow": 5.0,
+      "capacity": 5.0,
+      "amplification": 0.9
+    },
+    {
+      "from_id": 2,
+      "to_id": 1,
+      "flow": -4.5,
+      "capacity": 0.0,
+      "amplification": 1.1111111111111112
+    },
+    {
+      "from_id": 2,
+      "to_id": 4,
+      "flow": 0.11388888888888885,
+      "capacity": 4.0,
+      "amplification": 2.0
+    },
+    {
+      "from_id": 4,
+      "to_id": 2,
+      "flow": -0.2277777777777777,
+      "capacity": 0.0,
+      "amplification": 0.5
+    },
+    {
+      "from_id": 2,
+      "to_id": 5,
+      "flow": 4.386111111111111,
+      "capacity": 50.0,
+      "amplification": 1.0
+    },
+    {
+      "from_id": 5,
+      "to_id": 2,
+      "flow": -4.386111111111111,
+      "capacity": 0.0,
+      "amplification": 1.0
+    },
+    {
+      "from_id": 3,
+      "to_id": 5,
+      "flow": 8.0,
+      "capacity": 8.0,
+      "amplification": 1.0
+    },
+    {
+      "from_id": 5,
+      "to_id": 3,
+      "flow": -8.0,
+      "capacity": 0.0,
+      "amplification": 1.0
+    }
+  ],
+  "reverse_edge_ids": [1, 0, 3, 2, 5, 4, 7, 6, 9, 8, 11, 10, 13, 12],
+  "nodes": [
+    { "label": "1", "excess": 0.0, "reachable_from_source": true },
+    { "label": "12", "excess": 0.0, "reachable_from_source": true },
+    { "label": "14", "excess": 0.0, "reachable_from_source": true },
+    { "label": "2", "excess": 0.0, "reachable_from_source": true },
+    { "label": "3", "excess": 0.0, "reachable_from_source": true },
+    { "label": "4", "excess": 0.0, "reachable_from_source": true }
+  ],
+  "sink": 5,
+  "source": 0
+}
