@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "repository": "git@github.com:andrii-zhuk/generalizedFP.git",
   "description": "",
-  "main": "src/index.js",
+  "main": "src/index.tsx",
   "scripts": {
     "start": "webpack serve --open --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",

@@ -6,12 +6,14 @@
   If you experience any struggles with this sandbox, please raise an issue
   on github. :)
 */
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './example';
-import {genRandomTree} from './datasets/random-data';
-import {ForceGraph3D} from 'react-force-graph'
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import { genRandomTree } from "./datasets/random-data";
+import { ForceGraph3D } from "react-force-graph";
 ReactDOM.render(
-  <ForceGraph3D graphData={genRandomTree()}/>,
-  document.getElementById('graph')
+  <>
+    <App />
+  </>,
+  document.getElementById("graph")
 );
