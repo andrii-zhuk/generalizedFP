@@ -1,30 +1,26 @@
 import React, { useEffect, useRef } from "react";
 import graph_static from "../../static/result_graph.json";
-// import algorithm_static from "../../static/result_graph2.json";
+import algorithm_static from "../../static/result_algorithm.json";
 import { DirectedGraph } from "./types/DirectedGraph";
 import DisplayGraph from "./components/DisplayGraph/DisplayGraph";
 import useToolbox from "./components/Toolbox/Toolbox";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import { AlgorithmStep, Algorithm } from "./types/Algorithm";
+import { Algorithm } from "./types/Algorithm";
 graph_static as any;
-// algorithm_static as any;
+algorithm_static as any;
 
 function App() {
-  const [directedGraph, setDirectedGraph] =
-    React.useState<DirectedGraph | null>(null);
-  const [algorithm, setAlgorithm] = React.useState<Algorithm | null>(null);
+  const [directedGraph, setDirectedGraph] = React.useState<DirectedGraph>(null);
+  const [algorithm, setAlgorithm] = React.useState<Algorithm>(null);
   const [algorithmStep, setAlgorithmStep] = React.useState<number>(0);
 
   const stepType =
-    algorithmStep === 0
-      ? AlgorithmStep.AlgorithmStart
-      : AlgorithmStep.FindCycles;
-  // algorithm === null
-  //   ? null
-  //   : algorithm.steps.length === 0
-  //   ? null
-  //   : algorithm.steps[algorithmStep].step_type;
+    algorithm === null
+      ? null
+      : algorithm.steps.length === 0
+      ? null
+      : algorithm.steps[algorithmStep].step_type;
   const { expandAlgorithmInfo, toolbox } = useToolbox(
     stepType,
     () => {
@@ -44,10 +40,12 @@ function App() {
       console.log("Error while loading graph");
       return;
     }
-    const algorithm_response = await fetch("../../static/result_graph.json");
+    const algorithm_response = await fetch(
+      "../../static/result_algorithm.json"
+    );
     if (algorithm_response.ok) {
-      const algorithm = await algorithm_response.json();
-      setAlgorithm(algorithm);
+      const data = await algorithm_response.json();
+      setAlgorithm(data);
       setAlgorithmStep(0);
       expandAlgorithmInfo();
     } else {
@@ -65,7 +63,7 @@ function App() {
       <Container>
         <DisplayGraph
           graph={directedGraph}
-          algorithm={null}
+          algorithm={algorithm}
           step={algorithmStep}
         />
       </Container>

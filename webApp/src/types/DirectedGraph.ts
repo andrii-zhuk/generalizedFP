@@ -14,10 +14,10 @@ export interface Node {
 }
 
 export interface DirectedGraph {
+  sink: number;
+  source: number;
   nodes: Array<Node>;
   adj_lists: Array<number[]>;
   edges_list: Array<Edge>;
   reverse_edge_ids: Array<number>;
-  sink: number;
-  source: number;
 }
