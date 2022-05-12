@@ -1,0 +1,134 @@
+{
+  "steps": [
+    {
+      "step_type": "0",
+      "result": true,
+      "pushed_flow": 0.0,
+      "nodes_affected": [],
+      "edges_affected": []
+    },
+    {
+      "step_type": "1",
+      "result": true,
+      "pushed_flow": 5.0,
+      "nodes_affected": [],
+      "edges_affected": []
+    },
+    {
+      "step_type": "2",
+      "result": true,
+      "pushed_flow": 0.0,
+      "nodes_affected": [],
+      "edges_affected": [
+        { "edge_id": 4, "flow_amount": 8.0 },
+        { "edge_id": 8, "flow_amount": 4.0 },
+        { "edge_id": 6, "flow_amount": 4.444444444444445 }
+      ]
+    },
+    {
+      "step_type": "3",
+      "result": true,
+      "pushed_flow": 16.0,
+      "nodes_affected": [{ "node_id": 1, "excess_amount": 16.0 }],
+      "edges_affected": []
+    },
+    {
+      "step_type": "4",
+      "result": true,
+      "pushed_flow": 8.0,
+      "nodes_affected": [],
+      "edges_affected": [
+        { "edge_id": 12, "flow_amount": 8.0 },
+        { "edge_id": 0, "flow_amount": 4.0 }
+      ]
+    },
+    {
+      "step_type": "1",
+      "result": true,
+      "pushed_flow": 0.5555555555555554,
+      "nodes_affected": [],
+      "edges_affected": []
+    },
+    {
+      "step_type": "2",
+      "result": false,
+      "pushed_flow": 0.0,
+      "nodes_affected": [],
+      "edges_affected": []
+    },
+    {
+      "step_type": "4",
+      "result": true,
+      "pushed_flow": 0.49999999999999983,
+      "nodes_affected": [{ "node_id": 1, "excess_amount": 0.5555555555555554 }],
+      "edges_affected": [
+        { "edge_id": 10, "flow_amount": 0.49999999999999983 },
+        { "edge_id": 6, "flow_amount": 0.5555555555555554 }
+      ]
+    },
+    {
+      "step_type": "1",
+      "result": true,
+      "pushed_flow": 8.0,
+      "nodes_affected": [],
+      "edges_affected": []
+    },
+    {
+      "step_type": "2",
+      "result": false,
+      "pushed_flow": 0.0,
+      "nodes_affected": [],
+      "edges_affected": []
+    },
+    {
+      "step_type": "4",
+      "result": true,
+      "pushed_flow": 3.861111111111111,
+      "nodes_affected": [{ "node_id": 1, "excess_amount": 15.444444444444445 }],
+      "edges_affected": [
+        { "edge_id": 10, "flow_amount": 3.861111111111111 },
+        { "edge_id": 9, "flow_amount": 7.722222222222222 },
+        { "edge_id": 5, "flow_amount": 15.444444444444445 }
+      ]
+    },
+    {
+      "step_type": "1",
+      "result": true,
+      "pushed_flow": 0.2777777777777777,
+      "nodes_affected": [],
+      "edges_affected": []
+    },
+    {
+      "step_type": "2",
+      "result": false,
+      "pushed_flow": 0.0,
+      "nodes_affected": [],
+      "edges_affected": []
+    },
+    {
+      "step_type": "4",
+      "result": true,
+      "pushed_flow": 0.025,
+      "nodes_affected": [],
+      "edges_affected": [
+        { "edge_id": 10, "flow_amount": 0.025 },
+        { "edge_id": 9, "flow_amount": 0.05 },
+        { "edge_id": 2, "flow_amount": 10.0 }
+      ]
+    },
+    {
+      "step_type": "1",
+      "result": false,
+      "pushed_flow": 0.0,
+      "nodes_affected": [],
+      "edges_affected": []
+    },
+    {
+      "step_type": "5",
+      "result": true,
+      "pushed_flow": 12.386111111111111,
+      "nodes_affected": [],
+      "edges_affected": []
+    }
+  ]
+}

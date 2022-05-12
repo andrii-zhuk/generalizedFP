@@ -1,6 +1,6 @@
 use super::EPSILON;
 
-use crate::types::DirectedGraph;
+use crate::types::{AlgorithmResult, DirectedGraph};
 
 fn get_start_of_path(graph: &DirectedGraph, path: &Vec<usize>) -> usize {
     let edge_id = *path.first().unwrap();
@@ -8,7 +8,11 @@ fn get_start_of_path(graph: &DirectedGraph, path: &Vec<usize>) -> usize {
     return edge.from_id;
 }
 
-pub fn propagate_path(graph: &mut DirectedGraph, path: Option<Vec<usize>>) -> Option<f64> {
+pub fn propagate_path(
+    graph: &mut DirectedGraph,
+    path: Option<Vec<usize>>,
+    algorithm_result: &mut AlgorithmResult,
+) -> Option<f64> {
     if path == None {
         return None;
     }
@@ -35,6 +39,7 @@ pub fn propagate_path(graph: &mut DirectedGraph, path: Option<Vec<usize>>) -> Op
         Some(value) => value,
     };
     let flow_in_destination = flow;
+    let mut changed_edges: Vec<(usize, f64)> = vec![];
     for &edge_id in path.iter().rev() {
         let reverse_edge = graph.reverse_edge_ids[edge_id];
         let reverse_edge = &mut graph.edges_list[reverse_edge];
@@ -44,14 +49,27 @@ pub fn propagate_path(graph: &mut DirectedGraph, path: Option<Vec<usize>>) -> Op
 
         let edge = &mut graph.edges_list[edge_id];
         edge.flow += flow;
+        changed_edges.push((edge_id, flow));
     }
     if start_node_id != graph.source && start_node.excess > EPSILON {
+        algorithm_result.push_find_path(
+            Some(start_node_id),
+            flow,
+            flow_in_destination,
+            changed_edges,
+        );
         graph.nodes[start_node_id].excess -= flow;
+    } else {
+        algorithm_result.push_find_path(None, flow, flow_in_destination, changed_edges);
     }
     return Some(flow_in_destination);
 }
 
-pub fn propagate_cycle(graph: &mut DirectedGraph, cycle: Option<Vec<usize>>) -> Option<f64> {
+pub fn propagate_cycle(
+    graph: &mut DirectedGraph,
+    cycle: Option<Vec<usize>>,
+    algorithm_result: &mut AlgorithmResult,
+) -> Option<f64> {
     if cycle == None {
         return None;
     }
@@ -79,6 +97,7 @@ pub fn propagate_cycle(graph: &mut DirectedGraph, cycle: Option<Vec<usize>>) -> 
 
     graph.nodes[cycle_start].excess += flow_in_destination;
 
+    let mut changed_edges: Vec<(usize, f64)> = vec![];
     for &edge_id in cycle.iter().rev() {
         let reverse_edge = graph.reverse_edge_ids[edge_id];
         let reverse_edge = &mut graph.edges_list[reverse_edge];
@@ -88,7 +107,10 @@ pub fn propagate_cycle(graph: &mut DirectedGraph, cycle: Option<Vec<usize>>) -> 
 
         let edge = &mut graph.edges_list[edge_id];
         edge.flow += flow;
+        changed_edges.push((edge_id, flow));
     }
 
+    algorithm_result.push_find_cycles(changed_edges);
+    algorithm_result.push_cancel_cycles(cycle_start, flow_in_destination);
     return Some(flow_in_destination);
 }

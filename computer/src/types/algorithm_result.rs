@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, PartialEq)]
 pub enum AlgorithmStep {
     #[serde(rename = "0")]
     AlgorithmStart,

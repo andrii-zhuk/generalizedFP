@@ -3,7 +3,7 @@ use std::f64::consts::E;
 
 use crate::{
     algorithms::{get_path_edge_ids, get_path_node_ids, propagate_cycle},
-    types::{DirectedGraph, Edge},
+    types::{AlgorithmResult, DirectedGraph, Edge},
 };
 
 use super::bellman_ford;
@@ -61,7 +61,11 @@ fn edge_value(edge: &Edge, potentials: &Vec<f64>) -> Option<f64> {
 ///
 /// ### Complexity
 /// O(n + m)
-fn remove_negative_cycles(graph: &mut DirectedGraph, potentials: &Vec<f64>) -> Option<f64> {
+fn remove_negative_cycles(
+    graph: &mut DirectedGraph,
+    potentials: &Vec<f64>,
+    algorithm_result: &mut AlgorithmResult,
+) -> Option<f64> {
     let mut status = vec![0; graph.n()];
     let mut cycle: Vec<usize> = Vec::<usize>::new();
     cycle.reserve(graph.n());
@@ -97,6 +101,7 @@ fn remove_negative_cycles(graph: &mut DirectedGraph, potentials: &Vec<f64>) -> O
         }
         status[node_id] = 2;
     }
+    let mut cumulative_excess = 0.0;
 
     for node_id in 0..(graph.n()) {
         if !graph.nodes[node_id].reachable_from_source {
@@ -116,14 +121,16 @@ fn remove_negative_cycles(graph: &mut DirectedGraph, potentials: &Vec<f64>) -> O
         println!("Found cycle from {}:\n{:?}", node_id, cycle_nodes);
 
         let cycle_edges = get_path_edge_ids(Some(cycle.clone()));
-        let excess = propagate_cycle(graph, cycle_edges).unwrap_or(0.0);
+        let excess = propagate_cycle(graph, cycle_edges, algorithm_result).unwrap_or(0.0);
+        cumulative_excess += excess;
+        cycle.clear();
 
         println!("Which created excess {} in {}.", excess, node_id);
-
-        cycle.clear();
     }
-
-    Some(0.0)
+    if cumulative_excess < EPSILON {
+        return None;
+    }
+    Some(cumulative_excess)
 }
 
 /// Recalculates values of potentials in order to maintain following logic:
@@ -195,7 +202,7 @@ fn validate_potentials(graph: &DirectedGraph, potentials: &Vec<f64>, barrier: f6
     }
 }
 
-pub fn cancel_cycles(graph: &mut DirectedGraph) {
+pub fn cancel_cycles(graph: &mut DirectedGraph, algorithm_result: &mut AlgorithmResult) {
     let mut counter = 0;
     let mut potentials = vec![0.0; graph.n()];
     let edge_value = |edge: &Edge| -> Option<f64> {
@@ -216,7 +223,7 @@ pub fn cancel_cycles(graph: &mut DirectedGraph) {
     }
     if let Some(mut barrier) = barrier {
         while has_cycles(graph, &mut counter) {
-            remove_negative_cycles(graph, &potentials);
+            remove_negative_cycles(graph, &potentials, algorithm_result);
             println!("cancel_cycles stage {} finished", counter);
             recalculate_potentials(graph, &mut potentials, barrier);
             barrier *= 1.0 - 1.0 / (graph.n() as f64);
@@ -226,4 +233,5 @@ pub fn cancel_cycles(graph: &mut DirectedGraph) {
             }
         }
     }
+    algorithm_result.push_if_cycles_not_found();
 }

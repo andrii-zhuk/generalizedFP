@@ -9,7 +9,7 @@ pub fn has_augmenting_path(
     graph: &DirectedGraph,
     algorithm_result: &mut AlgorithmResult,
 ) -> Option<f64> {
-    fn bfs(graph: &DirectedGraph, algorithm_result: &mut AlgorithmResult) -> f64 {
+    fn bfs(graph: &DirectedGraph) -> f64 {
         let mut q = VecDeque::<(usize, Option<f64>)>::new();
         let mut used = vec![0; graph.n()];
         used[graph.source] = 1;
@@ -22,7 +22,6 @@ pub fn has_augmenting_path(
         }
         while let Some((cur, flow)) = q.pop_back() {
             if cur == graph.sink {
-                algorithm_result.push_has_augmenting_path(flow.clone());
                 return flow.unwrap();
             }
             for edge_id in &graph.adj_lists[cur] {
@@ -38,10 +37,12 @@ pub fn has_augmenting_path(
         }
         return 0.0;
     }
-    let flow = bfs(graph, algorithm_result);
+    let flow = bfs(graph);
     if flow < EPSILON {
+        algorithm_result.push_has_augmenting_path(None);
         return None;
     }
+    algorithm_result.push_has_augmenting_path(Some(flow));
     return Some(flow);
 }
 

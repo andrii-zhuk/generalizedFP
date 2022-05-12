@@ -11,7 +11,7 @@ pub fn find_flow(graph: &mut DirectedGraph, algorithm_result: &mut AlgorithmResu
     while has_augmenting_path(&graph, algorithm_result) != None {
         step += 1;
         println!("Step #{}", step);
-        cancel_cycles(graph);
+        cancel_cycles(graph, algorithm_result);
         let augmenting_path = get_augmenting_path(graph);
         let augmenting_path_nodes = get_path_node_ids(augmenting_path.clone());
         let augmenting_path_edges = get_path_edge_ids(augmenting_path);
@@ -19,7 +19,7 @@ pub fn find_flow(graph: &mut DirectedGraph, algorithm_result: &mut AlgorithmResu
             "Fat path found: {:?}",
             augmenting_path_nodes.unwrap_or(vec![])
         );
-        let flow = propagate_path(graph, augmenting_path_edges);
+        let flow = propagate_path(graph, augmenting_path_edges, algorithm_result);
         result += flow.unwrap_or(0.0);
         if flow == None {
             println!("No flow propagated");
