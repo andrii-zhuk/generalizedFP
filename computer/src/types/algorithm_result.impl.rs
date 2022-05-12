@@ -68,10 +68,10 @@ impl AlgorithmResult {
         self.steps.push(Action {
             step_type: AlgorithmStep::CancelCycles,
             result: true,
-            pushed_flow: -excess_amount,
+            pushed_flow: excess_amount,
             nodes_affected: vec![AffectedNode {
                 node_id,
-                excess_amount,
+                excess_amount: excess_amount,
             }],
             edges_affected: vec![],
         })
@@ -90,7 +90,7 @@ impl AlgorithmResult {
             nodes_affected: if start_node != None {
                 vec![AffectedNode {
                     node_id: start_node.unwrap(),
-                    excess_amount,
+                    excess_amount: -excess_amount,
                 }]
             } else {
                 vec![]

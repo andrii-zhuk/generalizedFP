@@ -8,6 +8,10 @@ use computer::{
 
 fn main() {
     let mut graph = read_from_file(&String::from("../static/mock_graph.txt"));
+
+    let result = write_to_file(&String::from("../static/result_graph.json"), &graph);
+    println!("{:?}", result);
+
     let mut algorithm_result = AlgorithmResult::new();
     algorithm_result.start();
     let found_flow = find_flow(&mut graph, &mut algorithm_result);
@@ -21,9 +25,6 @@ fn main() {
     if s == "y" || s == "Y" {
         println!("{:#?}", graph);
     }
-
-    let result = write_to_file(&String::from("../static/result_graph.json"), &graph);
-    println!("{:?}", result);
 
     let result = write_to_file(
         &String::from("../static/result_algorithm.json"),

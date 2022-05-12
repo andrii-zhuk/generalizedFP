@@ -60,7 +60,9 @@
       "step_type": "4",
       "result": true,
       "pushed_flow": 0.49999999999999983,
-      "nodes_affected": [{ "node_id": 1, "excess_amount": 0.5555555555555554 }],
+      "nodes_affected": [
+        { "node_id": 1, "excess_amount": -0.5555555555555554 }
+      ],
       "edges_affected": [
         { "edge_id": 10, "flow_amount": 0.49999999999999983 },
         { "edge_id": 6, "flow_amount": 0.5555555555555554 }
@@ -84,7 +86,9 @@
       "step_type": "4",
       "result": true,
       "pushed_flow": 3.861111111111111,
-      "nodes_affected": [{ "node_id": 1, "excess_amount": 15.444444444444445 }],
+      "nodes_affected": [
+        { "node_id": 1, "excess_amount": -15.444444444444445 }
+      ],
       "edges_affected": [
         { "edge_id": 10, "flow_amount": 3.861111111111111 },
         { "edge_id": 9, "flow_amount": 7.722222222222222 },
