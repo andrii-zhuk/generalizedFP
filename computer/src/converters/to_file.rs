@@ -1,24 +1,28 @@
-use std::{io::{Result, Write, BufWriter}, fs::File, env::consts::OS};
+use std::{
+    env::consts::OS,
+    fs::File,
+    io::{BufWriter, Result, Write},
+};
 
-use crate::types::DirectedGraph;
+use crate::types::{algorithm_result::AlgorithmResult, DirectedGraph};
 
-pub fn to_file(path: &String, graph: &DirectedGraph) -> Result<()> {
-    let mut file = File::open(path);
-    if file.is_err() {
-        let err = file.unwrap_err();
-        if err.kind() == std::io::ErrorKind::NotFound {
-            file = File::create(path);
-        }
-        else {
-            return Err(err)
-        }
-    }
-    let file = file?;
+fn open_or_create_file(path: &String) -> Result<BufWriter<File>> {
+    let file = File::create(path)?;
 
-    let buf_writer = BufWriter::new(file);
+    return Ok(BufWriter::new(file));
+}
+pub fn graph_to_file(path: &String, graph: &DirectedGraph) -> Result<()> {
+    let buf_writer = open_or_create_file(path)?;
 
     serde_json::to_writer(buf_writer, graph)?;
 
+    Ok(())
+}
+
+pub fn algorithm_steps_to_file(path: &String, algorithm_result: &AlgorithmResult) -> Result<()> {
+    let buf_writer = open_or_create_file(path)?;
+
+    serde_json::to_writer(buf_writer, algorithm_result)?;
 
     Ok(())
-} 
+}

@@ -11,3 +11,7 @@ Cargo.lock
 # will have compiled files and executables
 target/
 debug/
+
+
+#Web app stuff
+webApp/node_modules/

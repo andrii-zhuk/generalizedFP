@@ -1,14 +1,14 @@
 use crate::{
     algorithms::{get_augmenting_path, get_path_edge_ids, get_path_node_ids},
-    types::DirectedGraph,
+    types::{AlgorithmResult, DirectedGraph},
 };
 
 use super::{cancel_cycles, has_augmenting_path, propagate_path};
 
-pub fn find_flow(graph: &mut DirectedGraph) -> f64 {
+pub fn find_flow(graph: &mut DirectedGraph, algorithm_result: &mut AlgorithmResult) -> f64 {
     let mut result = 0.0;
     let mut step = 0;
-    while has_augmenting_path(&graph) != None {
+    while has_augmenting_path(&graph, algorithm_result) != None {
         step += 1;
         println!("Step #{}", step);
         cancel_cycles(graph);

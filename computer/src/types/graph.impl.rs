@@ -76,7 +76,9 @@ impl From<UncompressedGraph> for DirectedGraph {
 
         let nodes: Vec<Node> = nodes
             .into_iter()
-            .map(|label| Node {
+            .enumerate()
+            .map(|(id, label)| Node {
+                id,
                 label,
                 excess: 0.0,
                 reachable_from_source: false,
