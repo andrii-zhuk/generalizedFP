@@ -29,6 +29,36 @@ function basicCanvas(
   ctx.fillText(label, node.x, node.y);
 }
 
+function writeExcessLabelAbove(
+  node: NodeObject,
+  ctx: CanvasRenderingContext2D,
+  globalScale: number,
+  excess: number
+) {
+  let label = `+ ${excess.toFixed(2)}`;
+  let textColor = "green";
+  if (excess < 0) {
+    label = `- ${(-excess).toFixed(2)}`;
+    textColor = "red";
+  }
+  let fontSize = 18 / globalScale;
+  ctx.font = `${fontSize}px Sans-Serif`;
+  let textWidth = ctx.measureText(label).width;
+  const bckgDimensions = [textWidth, fontSize].map((n) => n + fontSize * 0.3); // some padding
+
+  ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+  ctx.fillRect(
+    node.x - bckgDimensions[0] / 2,
+    node.y - (3 * bckgDimensions[1]) / 2,
+    bckgDimensions[0],
+    bckgDimensions[1]
+  );
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = textColor;
+  ctx.fillText(label, node.x, node.y - bckgDimensions[1]);
+}
+
 export function defaultNodeCanvas(
   node: NodeObject,
   ctx: CanvasRenderingContext2D,
@@ -47,17 +77,25 @@ export function defaultNodeCanvas(
 export function sourceNodeCanvas(
   node: NodeObject,
   ctx: CanvasRenderingContext2D,
-  globalScale: number
+  globalScale: number,
+  excess?: number
 ) {
   basicCanvas(node, ctx, globalScale, "Source", "lightblue", "white");
+  if (excess !== undefined) {
+    writeExcessLabelAbove(node, ctx, globalScale, excess);
+  }
 }
 
 export function sinkNodeCanvas(
   node: NodeObject,
   ctx: CanvasRenderingContext2D,
-  globalScale: number
+  globalScale: number,
+  excess?: number
 ) {
   basicCanvas(node, ctx, globalScale, "Sink", "purple", "white");
+  if (excess !== undefined) {
+    writeExcessLabelAbove(node, ctx, globalScale, excess);
+  }
 }
 
 export function inactiveNodeCanvas(
@@ -93,26 +131,5 @@ export function excessChangedNodeCanvas(
       "black"
     );
   }
-  let label = `+ ${excess}`;
-  let textColor = "green";
-  if (excess < 0) {
-    label = `- ${-excess}`;
-    textColor = "red";
-  }
-  let fontSize = 18 / globalScale;
-  ctx.font = `${fontSize}px Sans-Serif`;
-  let textWidth = ctx.measureText(label).width;
-  const bckgDimensions = [textWidth, fontSize].map((n) => n + fontSize * 0.3); // some padding
-
-  ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
-  ctx.fillRect(
-    node.x - bckgDimensions[0] / 2,
-    node.y - (3 * bckgDimensions[1]) / 2,
-    bckgDimensions[0],
-    bckgDimensions[1]
-  );
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillStyle = textColor;
-  ctx.fillText(label, node.x, node.y - bckgDimensions[1]);
+  writeExcessLabelAbove(node, ctx, globalScale, excess);
 }

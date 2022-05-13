@@ -1,4 +1,4 @@
-import { GraphData } from "force-graph";
+import { GraphData, LinkObject, NodeObject } from "force-graph";
 import { DirectedGraph } from "./DirectedGraph";
 
 export function getGraph(g: DirectedGraph | null): {
@@ -40,4 +40,22 @@ export function getGraph(g: DirectedGraph | null): {
     nodeTranslator,
     linkTranslator,
   };
+}
+
+export function stringifyLink(link: LinkObject): string {
+  const src = link.source;
+  const trg = link.target;
+  const source_id =
+    typeof src === "number" || typeof src === "string"
+      ? src.toString()
+      : src.id.toString();
+  const target_id =
+    typeof trg === "number" || typeof trg === "string"
+      ? trg.toString()
+      : trg.id.toString();
+  return JSON.stringify({ source: source_id, target: target_id });
+}
+
+export function stringifyNode(node: NodeObject): string {
+  return node.id.toString();
 }

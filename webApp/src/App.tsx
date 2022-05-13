@@ -70,7 +70,6 @@ function App() {
       {toolbox}
       <input
         onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
-          console.log("pressed here");
           const file = event.target.files[0];
           if (!file) {
             return;
@@ -80,7 +79,6 @@ function App() {
             updateGraphFromText(event.target.result.toString());
           };
           reader.readAsText(file);
-          event.stopPropagation();
         }}
         id="upload-graph-menu-option"
         type="file"
