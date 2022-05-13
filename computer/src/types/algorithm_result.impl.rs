@@ -78,23 +78,26 @@ impl AlgorithmResult {
     }
     pub fn push_find_path(
         &mut self,
-        start_node: Option<usize>,
-        excess_amount: f64,
-        flow: f64,
+        start_node: usize,
+        flow_in_start: f64,
+        destination_node: usize,
+        flow_in_destination: f64,
         edges: Vec<(usize, f64)>,
     ) {
         self.steps.push(Action {
             step_type: AlgorithmStep::FindPath,
             result: true,
-            pushed_flow: flow,
-            nodes_affected: if start_node != None {
-                vec![AffectedNode {
-                    node_id: start_node.unwrap(),
-                    excess_amount: -excess_amount,
-                }]
-            } else {
-                vec![]
-            },
+            pushed_flow: flow_in_destination,
+            nodes_affected: vec![
+                AffectedNode {
+                    node_id: start_node,
+                    excess_amount: -flow_in_start,
+                },
+                AffectedNode {
+                    node_id: destination_node,
+                    excess_amount: flow_in_destination,
+                },
+            ],
             edges_affected: edges
                 .into_iter()
                 .map(|(edge_id, flow_amount)| -> AffectedEdge {

@@ -52,16 +52,15 @@ pub fn propagate_path(
         changed_edges.push((edge_id, flow));
     }
     if start_node_id != graph.source && start_node.excess > EPSILON {
-        algorithm_result.push_find_path(
-            Some(start_node_id),
-            flow,
-            flow_in_destination,
-            changed_edges,
-        );
         graph.nodes[start_node_id].excess -= flow;
-    } else {
-        algorithm_result.push_find_path(None, flow, flow_in_destination, changed_edges);
     }
+    algorithm_result.push_find_path(
+        start_node_id,
+        flow,
+        graph.sink,
+        flow_in_destination,
+        changed_edges,
+    );
     return Some(flow_in_destination);
 }
 
