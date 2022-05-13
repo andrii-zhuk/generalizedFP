@@ -7,9 +7,9 @@ use computer::{
 };
 
 fn main() {
-    let mut graph = read_from_file(&String::from("../static/mock_graph.txt"));
+    let mut graph = read_from_file(&String::from("../example/mock_graph.txt"));
 
-    let result = write_to_file(&String::from("../static/result_graph.json"), &graph);
+    let result = write_to_file(&String::from("../example/result_graph.json"), &graph);
     println!("{:?}", result);
 
     let mut algorithm_result = AlgorithmResult::new();
@@ -27,7 +27,7 @@ fn main() {
     }
 
     let result = write_to_file(
-        &String::from("../static/result_algorithm.json"),
+        &String::from("../example/result_algorithm.json"),
         &algorithm_result,
     );
     println!("{:?}", result);

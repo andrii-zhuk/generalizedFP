@@ -36,7 +36,10 @@
       "step_type": "4",
       "result": true,
       "pushed_flow": 8.0,
-      "nodes_affected": [],
+      "nodes_affected": [
+        { "node_id": 0, "excess_amount": -4.0 },
+        { "node_id": 8, "excess_amount": 8.0 }
+      ],
       "edges_affected": [
         { "edge_id": 12, "flow_amount": 8.0 },
         { "edge_id": 0, "flow_amount": 4.0 }
@@ -61,7 +64,8 @@
       "result": true,
       "pushed_flow": 0.49999999999999983,
       "nodes_affected": [
-        { "node_id": 1, "excess_amount": -0.5555555555555554 }
+        { "node_id": 1, "excess_amount": -0.5555555555555554 },
+        { "node_id": 8, "excess_amount": 0.49999999999999983 }
       ],
       "edges_affected": [
         { "edge_id": 10, "flow_amount": 0.49999999999999983 },
@@ -87,7 +91,8 @@
       "result": true,
       "pushed_flow": 3.861111111111111,
       "nodes_affected": [
-        { "node_id": 1, "excess_amount": -15.444444444444445 }
+        { "node_id": 1, "excess_amount": -15.444444444444445 },
+        { "node_id": 8, "excess_amount": 3.861111111111111 }
       ],
       "edges_affected": [
         { "edge_id": 10, "flow_amount": 3.861111111111111 },
@@ -113,7 +118,10 @@
       "step_type": "4",
       "result": true,
       "pushed_flow": 0.025,
-      "nodes_affected": [],
+      "nodes_affected": [
+        { "node_id": 0, "excess_amount": -10.0 },
+        { "node_id": 8, "excess_amount": 0.025 }
+      ],
       "edges_affected": [
         { "edge_id": 10, "flow_amount": 0.025 },
         { "edge_id": 9, "flow_amount": 0.05 },
