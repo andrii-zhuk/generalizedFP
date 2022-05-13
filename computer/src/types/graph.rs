@@ -1,7 +1,7 @@
 use serde::Serialize;
 
 use crate::types;
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, Clone)]
 pub struct DirectedGraph {
     pub source: usize,
     pub sink: usize,

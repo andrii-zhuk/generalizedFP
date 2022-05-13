@@ -1,4 +1,4 @@
-use std::io::{stdin, Error};
+use std::io::stdin;
 
 use computer::{
     algorithms::find_flow,

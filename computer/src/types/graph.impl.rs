@@ -27,6 +27,16 @@ fn set_reachable_from_source(graph: &mut DirectedGraph) {
 }
 
 impl DirectedGraph {
+    pub const fn new() -> DirectedGraph {
+        DirectedGraph {
+            source: 0,
+            sink: 0,
+            adj_lists: vec![],
+            edges_list: vec![],
+            reverse_edge_ids: vec![],
+            nodes: vec![],
+        }
+    }
     #[inline]
     pub fn reachable_from_source(&self, node_id: usize) -> bool {
         self.nodes[node_id].reachable_from_source

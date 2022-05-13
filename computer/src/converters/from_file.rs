@@ -14,12 +14,15 @@ where
 
 pub fn read_from_file(path: &String) -> DirectedGraph {
     let file = fs::read_to_string(path).expect("Error has been occured during reading from file.");
+    read_from_string(file)
+}
 
+pub fn read_from_string(text: String) -> DirectedGraph {
     let re = regex::Regex::new(r"\n| ").unwrap();
     let mut entries: Vec<&str> = re
-        .split(file.trim())
+        .split(text.trim())
         .filter(|elem| elem.len() > 0)
-        .collect::<Vec<&str>>(); //        .into_iter()        .map(|elem| elem.parse::<f64>().unwrap())        .rev()        .collect();
+        .collect();
 
     entries.reverse();
     let m: u64 = parse_next(&mut entries);

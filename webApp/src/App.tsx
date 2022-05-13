@@ -7,6 +7,9 @@ import useToolbox from "./components/Toolbox/Toolbox";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { Algorithm } from "./types/Algorithm";
+
+const rust = import("../pkg");
+
 graph_static as any;
 algorithm_static as any;
 
@@ -14,7 +17,21 @@ function App() {
   const [directedGraph, setDirectedGraph] = React.useState<DirectedGraph>(null);
   const [algorithm, setAlgorithm] = React.useState<Algorithm>(null);
   const [algorithmStep, setAlgorithmStep] = React.useState<number>(0);
-
+  const updateGraphFromText = async (graph_input: string) => {
+    await rust
+      .then((m: any) => {
+        const result = JSON.parse(m.find_generalized_flow(graph_input));
+        if (result.error !== "") {
+          console.log("Error in graph parser/algorithm");
+        } else {
+          setDirectedGraph(result.initial_graph);
+          setAlgorithm(result.algorithm_steps);
+          setAlgorithmStep(0);
+          expandAlgorithmInfo();
+        }
+      })
+      .catch(console.error);
+  };
   const stepType =
     algorithm === null
       ? null
@@ -32,26 +49,17 @@ function App() {
   );
 
   const getData = async () => {
-    const graph_response = await fetch("../../static/result_graph.json");
-    if (graph_response.ok) {
-      const graph = await graph_response.json();
-      setDirectedGraph(graph);
-    } else {
-      console.log("Error while loading graph");
-      return;
-    }
-    const algorithm_response = await fetch(
-      "../../static/result_algorithm.json"
-    );
-    if (algorithm_response.ok) {
-      const data = await algorithm_response.json();
-      setAlgorithm(data);
-      setAlgorithmStep(0);
-      expandAlgorithmInfo();
-    } else {
-      console.log("Error while loading algorithm result");
-      return;
-    }
+    const graph_input = `
+    7 1 4
+    1 2 5 2.0
+    1 3 10 0.005
+    3 12 15 2.0
+    12 14 5 0.9
+    14 3 4 2.0
+    14 4 50 1.0
+    2 4 8 1.0
+    `;
+    await updateGraphFromText(graph_input);
   };
   useEffect(() => {
     getData();
@@ -60,6 +68,25 @@ function App() {
   return (
     <Box sx={{ maxHeight: "100%" }}>
       {toolbox}
+      <input
+        onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
+          console.log("pressed here");
+          const file = event.target.files[0];
+          if (!file) {
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            updateGraphFromText(event.target.result.toString());
+          };
+          reader.readAsText(file);
+          event.stopPropagation();
+        }}
+        id="upload-graph-menu-option"
+        type="file"
+        multiple={false}
+        hidden
+      />
       <Container>
         <DisplayGraph
           graph={directedGraph}
