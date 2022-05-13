@@ -7,6 +7,9 @@ import useToolbox from "./components/Toolbox/Toolbox";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { Algorithm } from "./types/Algorithm";
+
+const rust = import("../pkg");
+
 graph_static as any;
 algorithm_static as any;
 
@@ -55,6 +58,7 @@ function App() {
   };
   useEffect(() => {
     getData();
+    rust.then((m) => console.log(m.add(4, 7))).catch(console.error);
   }, []);
 
   return (
