@@ -1,12 +1,9 @@
 use std::{
-    env::consts::OS,
     fs::File,
-    io::{BufWriter, Result, Write},
+    io::{BufWriter, Result},
 };
 
 use serde::Serialize;
-
-use crate::types::{algorithm_result::AlgorithmResult, DirectedGraph};
 
 fn open_or_create_file(path: &String) -> Result<BufWriter<File>> {
     let file = File::create(path)?;
