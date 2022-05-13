@@ -1,17 +1,13 @@
 import React, { useEffect, useRef } from "react";
-import graph_static from "../../static/result_graph.json";
-import algorithm_static from "../../static/result_algorithm.json";
 import { DirectedGraph } from "./types/DirectedGraph";
 import DisplayGraph from "./components/DisplayGraph/DisplayGraph";
 import useToolbox from "./components/Toolbox/Toolbox";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { Algorithm } from "./types/Algorithm";
+import { getRandomGraph } from "./datasets/random-data";
 
 const rust = import("../pkg");
-
-graph_static as any;
-algorithm_static as any;
 
 function App() {
   const [directedGraph, setDirectedGraph] = React.useState<DirectedGraph>(null);
@@ -59,7 +55,9 @@ function App() {
     14 4 50 1.0
     2 4 8 1.0
     `;
-    await updateGraphFromText(graph_input);
+    const graph = getRandomGraph(8);
+    console.log(graph);
+    await updateGraphFromText(graph);
   };
   useEffect(() => {
     getData();
