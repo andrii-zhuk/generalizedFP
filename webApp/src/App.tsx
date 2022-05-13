@@ -17,7 +17,17 @@ function App() {
   const [directedGraph, setDirectedGraph] = React.useState<DirectedGraph>(null);
   const [algorithm, setAlgorithm] = React.useState<Algorithm>(null);
   const [algorithmStep, setAlgorithmStep] = React.useState<number>(0);
-
+  const updateGraphFromText = (graph_input: string) => {
+    const result = JSON.parse(m.find_generalized_flow(graph_input));
+    if (result.error !== "") {
+      console.log("Error in graph parser/algorithm");
+    } else {
+      setDirectedGraph(result.initial_graph);
+      setAlgorithm(result.algorithm_steps);
+      setAlgorithmStep(0);
+      expandAlgorithmInfo();
+    }
+  };
   const stepType =
     algorithm === null
       ? null
@@ -35,30 +45,24 @@ function App() {
   );
 
   const getData = async () => {
-    const graph_response = await fetch("../../static/result_graph.json");
-    if (graph_response.ok) {
-      const graph = await graph_response.json();
-      setDirectedGraph(graph);
-    } else {
-      console.log("Error while loading graph");
-      return;
-    }
-    const algorithm_response = await fetch(
-      "../../static/result_algorithm.json"
-    );
-    if (algorithm_response.ok) {
-      const data = await algorithm_response.json();
-      setAlgorithm(data);
-      setAlgorithmStep(0);
-      expandAlgorithmInfo();
-    } else {
-      console.log("Error while loading algorithm result");
-      return;
-    }
+    const graph_input = `8 1 4
+    1 2 5 2.0
+    1 3 10 0.005
+    3 12 15 2.0
+    12 14 5 0.9
+    14 3 4 2.0
+    14 4 50 1.0
+    2 4 8 1.0
+    16 4 100 1.9
+    `;
+    await rust
+      .then((m) => {
+        updateGraphFromText(graph_input);
+      })
+      .catch(console.error);
   };
   useEffect(() => {
     getData();
-    rust.then((m) => console.log(m.add(4, 7))).catch(console.error);
   }, []);
 
   return (
