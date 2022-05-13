@@ -38,9 +38,17 @@ export default function MenuDropdown(): [JSX.Element, JSX.Element] {
         "aria-labelledby": "basic-button",
       }}
     >
-      <MenuItem onClick={handleClose}>Import graph</MenuItem>
-      <MenuItem onClick={handleClose}>Describe graph</MenuItem>
-      <MenuItem onClick={handleClose}>Guide</MenuItem>
+      <MenuItem key={0}>
+        <label onClick={handleClose} htmlFor="upload-graph-menu-option">
+          Import graph
+        </label>
+      </MenuItem>
+      <MenuItem key={1} onClick={handleClose}>
+        Describe graph
+      </MenuItem>
+      <MenuItem key={2} onClick={handleClose}>
+        Guide
+      </MenuItem>
     </Menu>,
   ];
 }
