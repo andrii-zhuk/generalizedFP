@@ -3,13 +3,15 @@ import { DirectedGraph } from "./types/DirectedGraph";
 import DisplayGraph from "./components/DisplayGraph/DisplayGraph";
 import useToolbox from "./components/Toolbox/Toolbox";
 import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
 import { Algorithm } from "./types/Algorithm";
 import { getRandomGraph } from "./datasets/random-data";
+import useWindowSize from "./components/WindowSize/windowSizeHook";
 
 const rust = import("../pkg");
 
 function App() {
+  const windowSize = useWindowSize();
+
   const [directedGraph, setDirectedGraph] = React.useState<DirectedGraph>(null);
   const [algorithm, setAlgorithm] = React.useState<Algorithm>(null);
   const [algorithmStep, setAlgorithmStep] = React.useState<number>(0);
@@ -83,13 +85,13 @@ function App() {
         multiple={false}
         hidden
       />
-      <Container>
-        <DisplayGraph
-          graph={directedGraph}
-          algorithm={algorithm}
-          step={algorithmStep}
-        />
-      </Container>
+      <DisplayGraph
+        graph={directedGraph}
+        algorithm={algorithm}
+        step={algorithmStep}
+        width={windowSize.width}
+        height={windowSize.height}
+      />
     </Box>
   );
 }

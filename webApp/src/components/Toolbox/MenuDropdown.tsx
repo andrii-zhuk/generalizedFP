@@ -44,9 +44,12 @@ export default function MenuDropdown(): [JSX.Element, JSX.Element] {
         </label>
       </MenuItem>
       <MenuItem key={1} onClick={handleClose}>
-        Describe graph
+        Random graph
       </MenuItem>
       <MenuItem key={2} onClick={handleClose}>
+        Describe graph
+      </MenuItem>
+      <MenuItem key={3} onClick={handleClose}>
         Guide
       </MenuItem>
     </Menu>,

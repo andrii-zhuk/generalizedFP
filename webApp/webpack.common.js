@@ -47,10 +47,10 @@ module.exports = {
       template: "src/index.html",
     }),
     // uncomment this to compile pkg
-    // new WasmPackPlugin({
-    //   crateDirectory: path.resolve(__dirname, "../computer/"),
-    //   outDir: path.resolve(__dirname, "pkg"),
-    // }),
+    new WasmPackPlugin({
+      crateDirectory: path.resolve(__dirname, "../computer/"),
+      outDir: path.resolve(__dirname, "pkg"),
+    }),
     new webpack.ProvidePlugin({
       TextDecoder: ["text-encoding", "TextDecoder"],
       TextEncoder: ["text-encoding", "TextEncoder"],

@@ -1,6 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { ForceGraph2D } from "react-force-graph";
-import { genRandomTree } from "../../datasets/random-data";
 import { DirectedGraph } from "../../types/DirectedGraph";
 import {
   getGraph,
@@ -18,8 +17,8 @@ import { Algorithm } from "../../types/Algorithm";
 import { GraphData, LinkObject, NodeObject } from "force-graph";
 import { defaultLinkCanvas } from "../CanvasObjects/linkCanvas";
 export default function useDisplayGraph(props: {
-  // height: number;
-  // width: number;
+  height: number;
+  width: number;
   graph: DirectedGraph;
   algorithm: Algorithm;
   step: number;
@@ -114,8 +113,8 @@ export default function useDisplayGraph(props: {
     <ForceGraph2D
       ref={forceGraphRef}
       graphData={graphData.data}
-      // height={props.height}
-      // width={props.width}
+      height={props.height}
+      width={props.width}
       linkWidth={(link) => (isHighlightedLink(link) ? 4 : 2)}
       linkLineDash={(link) => {
         const id = graphData.linkTranslator.get(stringifyLink(link));
