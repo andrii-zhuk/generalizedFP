@@ -1,4 +1,4 @@
-pub const EPSILON: f64 = std::f64::EPSILON;
+pub const EPSILON: f64 = 1e-6;
 
 pub fn get_path_node_ids(path: Option<Vec<usize>>) -> Option<Vec<usize>> {
     if let Some(path) = path {

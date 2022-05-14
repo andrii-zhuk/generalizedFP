@@ -87,7 +87,7 @@ fn remove_negative_cycles(
                 dfs(edge.to_id, graph, potentials, status, cycle);
             }
             if status[edge.to_id] == 1 || cycle.len() > 0 {
-                if cycle.len() == 0 || cycle[0] != cycle[cycle.len() - 1] {
+                if cycle.len() == 0 || cycle.len() % 2 == 0 {
                     cycle.push(edge.to_id);
                     cycle.push(edge_id);
                     if cycle[0] == edge.from_id {
@@ -123,9 +123,12 @@ fn remove_negative_cycles(
         let cycle_edges = get_path_edge_ids(Some(cycle.clone()));
         let excess = propagate_cycle(graph, cycle_edges, algorithm_result).unwrap_or(0.0);
         cumulative_excess += excess;
+        println!(
+            "Which created excess {} in {}.",
+            excess,
+            cycle_nodes.first().unwrap()
+        );
         cycle.clear();
-
-        println!("Which created excess {} in {}.", excess, node_id);
     }
     if cumulative_excess < EPSILON {
         return None;
