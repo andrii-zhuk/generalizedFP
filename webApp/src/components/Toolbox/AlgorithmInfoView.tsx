@@ -12,8 +12,6 @@ import Button from "@mui/material/Button";
 import { Container } from "@mui/material";
 import { AlgorithmStep } from "../../types/Algorithm";
 
-const drawerWidth = 300;
-
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -23,6 +21,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export default function AlgorithmInfoView(
+  width: number,
   selectedAlgorithmStep: AlgorithmStep | null,
   toStartStepButton: () => void,
   prevStepButton: () => void,
@@ -32,6 +31,8 @@ export default function AlgorithmInfoView(
   algorithmInfoButton: JSX.Element;
   algorithmInfo: JSX.Element;
 } {
+  const drawerWidth = width;
+
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -85,11 +86,13 @@ export default function AlgorithmInfoView(
                 selectedAlgorithmStep === null ||
                 selectedAlgorithmStep === AlgorithmStep.AlgorithmStart
               }
-              onClick={prevStepButton}
+              onClick={toStartStepButton}
             >
               To start
             </Button>
-            <Button disabled={true}>Prev step</Button>
+            <Button disabled={true} onClick={prevStepButton}>
+              Prev step
+            </Button>
             <Button
               disabled={
                 selectedAlgorithmStep === null ||
@@ -101,7 +104,7 @@ export default function AlgorithmInfoView(
             </Button>
           </ButtonGroup>
         </Container>
-        <Container sx={{ paddingTop: "20" }}>
+        <Container sx={{ paddingTop: "20", paddingBottom: "20" }}>
           <TreeView
             expanded={[
               AlgorithmStep.HasAugmentingPath,

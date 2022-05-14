@@ -6,7 +6,8 @@ import MenuItem from "@mui/material/MenuItem";
 import { getRandomGraph } from "../../datasets/random-data";
 
 export default function MenuDropdown(
-  updateGraph: (graph_input: string) => void
+  updateGraph: (graph_input: string) => void,
+  expandInputGraph: () => void
 ): [JSX.Element, JSX.Element] {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -57,7 +58,13 @@ export default function MenuDropdown(
       >
         Random graph
       </MenuItem>
-      <MenuItem key={2} onClick={handleClose}>
+      <MenuItem
+        key={2}
+        onClick={() => {
+          handleClose();
+          expandInputGraph();
+        }}
+      >
         Describe graph
       </MenuItem>
       <MenuItem key={3} onClick={handleClose}>

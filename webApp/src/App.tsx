@@ -1,11 +1,12 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { DirectedGraph } from "./types/DirectedGraph";
 import DisplayGraph from "./components/DisplayGraph/DisplayGraph";
 import useToolbox from "./components/Toolbox/Toolbox";
 import Box from "@mui/material/Box";
 import { Algorithm } from "./types/Algorithm";
-import { getRandomGraph } from "./datasets/random-data";
+import useAlgorithmInfoView from "./components/Toolbox/AlgorithmInfoView";
 import useWindowSize from "./components/WindowSize/windowSizeHook";
+import useInputGraph from "./components/Toolbox/InputGraph";
 
 const rust = import("../pkg");
 
@@ -16,15 +17,16 @@ function App() {
   const [algorithm, setAlgorithm] = React.useState<Algorithm>(null);
   const [algorithmStep, setAlgorithmStep] = React.useState<number>(0);
   const updateGraphFromText = async (graph_input: string) => {
+    setGraphText(graph_input);
     await rust
       .then((m: any) => {
         const result = JSON.parse(m.find_generalized_flow(graph_input));
         if (result.error !== "") {
           console.log("Error in graph parser/algorithm");
         } else {
+          setAlgorithmStep(0);
           setDirectedGraph(result.initial_graph);
           setAlgorithm(result.algorithm_steps);
-          setAlgorithmStep(0);
           expandAlgorithmInfo();
         }
       })
@@ -37,21 +39,31 @@ function App() {
       : algorithm.steps.length === 0
       ? null
       : algorithm.steps[algorithmStep].step_type;
+  const { expandAlgorithmInfo, algorithmInfoButton, algorithmInfo } =
+    useAlgorithmInfoView(
+      Math.min(windowSize.width / 4, 350),
+      stepType,
+      () => {
+        setAlgorithmStep(0);
+      },
+      () => {},
+      () => {
+        setAlgorithmStep(algorithmStep + 1);
+      }
+    );
 
-  const { expandAlgorithmInfo, toolbox } = useToolbox(
-    stepType,
-    () => {
-      setAlgorithmStep(0);
-    },
-    () => {},
-    () => {
-      setAlgorithmStep(algorithmStep + 1);
-    },
+  const { setGraphText, expandInputGraph, inputGraphSection } = useInputGraph(
+    Math.min(windowSize.width / 3, 500),
     updateGraphFromText
+  );
+  const toolbox = useToolbox(
+    updateGraphFromText,
+    algorithmInfoButton,
+    expandInputGraph
   );
 
   const getData = async () => {
-    const graph_input = `
+    const example_graph_input = `
     7 1 4
     1 2 5 2.0
     1 3 10 0.005
@@ -59,9 +71,8 @@ function App() {
     12 14 5 0.9
     14 3 4 2.0
     14 4 50 1.0
-    2 4 8 1.0
-    `;
-    await updateGraphFromText(graph_input);
+    2 4 8 1.0`;
+    await updateGraphFromText(example_graph_input);
   };
   useEffect(() => {
     getData();
@@ -70,6 +81,8 @@ function App() {
   return (
     <Box sx={{ maxHeight: "100%" }}>
       {toolbox}
+      {algorithmInfo}
+      {inputGraphSection}
       <input
         onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
           const file = event.target.files[0];
