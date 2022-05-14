@@ -30,20 +30,24 @@ function App() {
       })
       .catch(console.error);
   };
+
   const stepType =
     algorithm === null
       ? null
       : algorithm.steps.length === 0
       ? null
       : algorithm.steps[algorithmStep].step_type;
+
   const { expandAlgorithmInfo, toolbox } = useToolbox(
     stepType,
     () => {
       setAlgorithmStep(0);
     },
+    () => {},
     () => {
       setAlgorithmStep(algorithmStep + 1);
-    }
+    },
+    updateGraphFromText
   );
 
   const getData = async () => {
@@ -57,9 +61,7 @@ function App() {
     14 4 50 1.0
     2 4 8 1.0
     `;
-    const graph = getRandomGraph(8);
-    console.log(graph);
-    await updateGraphFromText(graph);
+    await updateGraphFromText(graph_input);
   };
   useEffect(() => {
     getData();

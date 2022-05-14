@@ -3,8 +3,11 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import { getRandomGraph } from "../../datasets/random-data";
 
-export default function MenuDropdown(): [JSX.Element, JSX.Element] {
+export default function MenuDropdown(
+  updateGraph: (graph_input: string) => void
+): [JSX.Element, JSX.Element] {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -43,7 +46,15 @@ export default function MenuDropdown(): [JSX.Element, JSX.Element] {
           Import graph
         </label>
       </MenuItem>
-      <MenuItem key={1} onClick={handleClose}>
+      <MenuItem
+        key={1}
+        onClick={() => {
+          handleClose();
+          const N = Math.round(Math.random() * 3 + 7);
+          const graph = getRandomGraph(N);
+          updateGraph(graph);
+        }}
+      >
         Random graph
       </MenuItem>
       <MenuItem key={2} onClick={handleClose}>

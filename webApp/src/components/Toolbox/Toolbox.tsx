@@ -8,15 +8,22 @@ import { AlgorithmStep } from "../../types/Algorithm";
 
 export default function ToolboxView(
   currentAlgorithmStep: AlgorithmStep | null,
+  toStartStepButton: () => void,
   prevStepButton: () => void,
-  nextStepButton: () => void
+  nextStepButton: () => void,
+  updateGraph: (graph_input: string) => void
 ): {
   expandAlgorithmInfo: () => void;
   toolbox: JSX.Element;
 } {
-  const menuDropdown = useMenuDropdown();
+  const menuDropdown = useMenuDropdown(updateGraph);
   const { expandAlgorithmInfo, algorithmInfoButton, algorithmInfo } =
-    useAlgorithmInfoView(currentAlgorithmStep, prevStepButton, nextStepButton);
+    useAlgorithmInfoView(
+      currentAlgorithmStep,
+      toStartStepButton,
+      prevStepButton,
+      nextStepButton
+    );
   return {
     expandAlgorithmInfo,
     toolbox: (

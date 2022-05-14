@@ -24,6 +24,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export default function AlgorithmInfoView(
   selectedAlgorithmStep: AlgorithmStep | null,
+  toStartStepButton: () => void,
   prevStepButton: () => void,
   nextStepButton: () => void
 ): {
@@ -86,8 +87,9 @@ export default function AlgorithmInfoView(
               }
               onClick={prevStepButton}
             >
-              Previous step
+              To start
             </Button>
+            <Button disabled={true}>Prev step</Button>
             <Button
               disabled={
                 selectedAlgorithmStep === null ||
@@ -101,7 +103,10 @@ export default function AlgorithmInfoView(
         </Container>
         <Container sx={{ paddingTop: "20" }}>
           <TreeView
-            expanded={["1"]}
+            expanded={[
+              AlgorithmStep.HasAugmentingPath,
+              AlgorithmStep.FindCycles,
+            ]}
             selected={[selectedAlgorithmStep]}
             sx={{ maxWidth: "100%" }}
           >
@@ -113,22 +118,23 @@ export default function AlgorithmInfoView(
             <TreeItem
               nodeId={AlgorithmStep.HasAugmentingPath}
               sx={{ paddingY: "2" }}
-              label="while(has augmenting path)"
+              label="while(hasAugmentingPath())"
             >
               <TreeItem
                 nodeId={AlgorithmStep.FindCycles}
                 sx={{ paddingY: "2" }}
-                label="FindAllCycles()"
-              />
-              <TreeItem
-                nodeId={AlgorithmStep.CancelCycles}
-                sx={{ paddingY: "2" }}
-                label="CancelCycles()"
-              />
+                label="while(findCycle())"
+              >
+                <TreeItem
+                  nodeId={AlgorithmStep.CancelCycles}
+                  sx={{ paddingY: "2" }}
+                  label="cancelCycle()"
+                />
+              </TreeItem>
               <TreeItem
                 nodeId={AlgorithmStep.FindPath}
                 sx={{ paddingY: "2" }}
-                label="FindWidestFlowPath()"
+                label="findWidestFlowPath()"
               />
             </TreeItem>
             <TreeItem

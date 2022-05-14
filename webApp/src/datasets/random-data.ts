@@ -69,20 +69,51 @@ export function getRandomGraph(N = 10, reverse = false) {
   const M = Math.round((N * (N - 1)) / 4);
 
   let edges: string[] = [];
+  let edgesSet = new Set();
   for (let i = 0; i < M - 6; ++i) {
-    const [from, to] = randomLink(nodes, [source, sink]);
+    let [from, to] = [0, 0];
+    while (true) {
+      [from, to] = randomLink(nodes, [source, sink]);
+      if (
+        !edgesSet.has(JSON.stringify([from, to])) &&
+        !edgesSet.has(JSON.stringify([to, from]))
+      ) {
+        break;
+      }
+    }
+    edgesSet.add(JSON.stringify([from, to]));
     const capacity = randomFloat(10, 30);
     const amplification = randomFloat(0.5, 2);
     edges.push(`${from} ${to} ${capacity} ${amplification}`);
   }
   for (let i = 0; i < 3; ++i) {
-    const [from, to] = randomLinkFrom(nodes, [source, sink], source);
+    let [from, to] = [0, 0];
+    while (true) {
+      [from, to] = randomLinkFrom(nodes, [source, sink], source);
+      if (
+        !edgesSet.has(JSON.stringify([from, to])) &&
+        !edgesSet.has(JSON.stringify([to, from]))
+      ) {
+        break;
+      }
+    }
+    edgesSet.add(JSON.stringify([from, to]));
     const capacity = randomFloat(10, 30);
     const amplification = randomFloat(0.5, 2);
     edges.push(`${from} ${to} ${capacity} ${amplification}`);
   }
   for (let i = 0; i < 3; ++i) {
-    const [from, to] = randomLinkTo(nodes, [source, sink], sink);
+    let [from, to] = [0, 0];
+    while (true) {
+      [from, to] = randomLinkTo(nodes, [source, sink], sink);
+      if (
+        !edgesSet.has(JSON.stringify([from, to])) &&
+        !edgesSet.has(JSON.stringify([to, from]))
+      ) {
+        break;
+      }
+    }
+    edgesSet.add(JSON.stringify([from, to]));
     const capacity = randomFloat(10, 30);
     const amplification = randomFloat(0.5, 2);
     edges.push(`${from} ${to} ${capacity} ${amplification}`);
