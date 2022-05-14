@@ -66,8 +66,21 @@ pub fn bellman_ford(
                         }
 
                         if cycle.len() > 2 * graph.n() {
-                            panic!("Negative cycle retrieving error: Cycle length can not exceed number of nodes in graph.");
+                            break;
                         }
+                    }
+                    while cycle.len() > 1 {
+                        if cycle.first().unwrap() == cycle.last().unwrap() {
+                            cycle.pop();
+                            cycle.pop();
+                        } else {
+                            break;
+                        }
+                    }
+                    if cycle.len() == 1 {
+                        panic!(
+                            "Negative cycle retrieving error: possible bug in bellman-algorithm."
+                        );
                     }
                     return (dist, parents, Some(cycle));
                 }
