@@ -55,32 +55,27 @@ pub fn bellman_ford(
                     let mut cycle: Vec<usize> = vec![];
                     let mut node_id = current_node(edge);
                     cycle.push(node_id);
-                    loop {
+                    while (cycle.len() == 1 || node_id != cycle[0]) && cycle.len() <= 2 * graph.n()
+                    {
                         let edge_id = parents[node_id]
                             .expect("Negative cycle retrieving error: Undefined parent.");
                         cycle.push(edge_id);
                         node_id = current_node(&graph.edges_list[edge_id]);
                         cycle.push(node_id);
-                        if node_id == cycle[0] {
-                            break;
-                        }
-
-                        if cycle.len() > 2 * graph.n() {
-                            break;
-                        }
                     }
-                    while cycle.len() > 1 {
-                        if cycle.first().unwrap() == cycle.last().unwrap() {
-                            cycle.pop();
-                            cycle.pop();
-                        } else {
-                            break;
-                        }
+
+                    cycle.reverse();
+                    while cycle.len() > 1 && cycle.first().unwrap() != cycle.last().unwrap() {
+                        cycle.pop();
+                        cycle.pop();
                     }
                     if cycle.len() == 1 {
                         panic!(
                             "Negative cycle retrieving error: possible bug in bellman-algorithm."
                         );
+                    }
+                    if reverse {
+                        cycle.reverse();
                     }
                     return (dist, parents, Some(cycle));
                 }
