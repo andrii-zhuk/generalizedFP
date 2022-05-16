@@ -12,6 +12,6 @@ Cargo.lock
 target/
 debug/
 
-
 #Web app stuff
 webApp/node_modules/
+webApp/dist/

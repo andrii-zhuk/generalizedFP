@@ -1,0 +1,11 @@
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+**/*.rs.bk
+debug/
+target/
+
+webApp/node_modules/
+example/
+webApp/dist/
